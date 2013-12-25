@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# launch script for vsss I Prefer a 9term window for this
+## but xterm/rxvterm should work just as welljust don'tt use
+## The terminals that come with the modern desktop envs
+## they try to be to smart, and make controling just about any 
+## Speech synth hell
+
+# And because KDE is so stupid, we yet again 
+PLAN9=/usr/local/plan9 export PLAN9
+PATH=$PATH:$PLAN9/bin export PATH
+CMDP=./vsss_cmd.sh
+9term -f $PLAN9/font/times/latin1.bold.10.font $CMDP
+
