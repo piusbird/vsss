@@ -1,27 +1,27 @@
 vsss: A Very Simple Speech Shell
 ================================
 
-    vsss is a script for controling a software speech synthizer such as espeak or swift. These programs have charicteristics that make
+    vsss is a script for controlling a software speech synthesizer such as espeak or swift. These programs have characteristics that make
     it nearly impossible to control from a modern terminal emulator. There are of course Graphical User Interfaces to such software -
     however are all stink, or haven't been updated since the days when OSS was still current. This script is designed to be used -
     with a dumb terminal emulator such as 9term or xterm, smarter TMs  (Gnome terminal, KConsole, etc) will not work as they have -
-    more complicated interupt handling, and input buffering. 
+    more complicated interrupt handling, and input buffering. 
 
     vsss depends on the Plan 9 User Space currently see http://swtch.com/plan9port/ but should be easy to modify if -
     you don't want the plan9 user space, although I can't think of any reason why you wouldn't :) At any rate once you -
-    have p9p installed or if you're self loothing is so intense that you have decided to remove all the fun bits.
-    and you launch the script you will be greated by the friendliest user interface in the history of the world to wit 
+    have p9p installed or if you're self loathing is so intense that you have decided to remove all the fun bits.
+    and you launch the script you will be greeted by the friendliest user interface in the history of the world to wit 
 
                 Very Stupid Speech Shell
                 Version 0.2
 
 
                 :
-    The colan tells you that the program is waiting for commands which for your convince are a maxium of two letters long
+    The colon tells you that the program is waiting for commands which for your convince are a maximum of two letters long
 
     Command:            WTF?
     s|ss                Snarf 'n' say copy clipboard text to a new snarf buffer, speak snarf buffer
-    m                   Mangle: start a subshell
+    m                   Mangle: start a sub shell
     e                   starts an editor on the current snarf buffer 
     r                   speak active snarf buffer
     l                   load clipboard text into the active snarf buffer
