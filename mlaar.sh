@@ -1,34 +1,66 @@
 #!/bin/bash
 
-## WaRNING M. Arnold Logicstics INTERNAL CODE 
-## AHEAD 
+# Copyright (c) 2014 Matt Arnold
+# 
+# Permission to use, copy, modify, and/or distribute this software 
+# for any purpose with or without fee is hereby granted, 
+# provided that the above copyright 
+# notice and this permission notice appear in all copies.
+# AND WITH THE STIPULATION THAT
 
-## Writen for venomoth.internal use outside is not advised
-## PATHS ARE HARD CODED FUDGE YOU
-## But this is ISC licensed so if it ever does make it off 
-## an internal server
-## You can have fun with it
+# By distributing this software, you waive any legal power to 
+# forbid circumvention of technological measures 
+# to the extent such circumvention is effected by exercising rights under 
+# this License with respect to the covered work, 
+# and you disclaim any intention to limit operation or 
+# modification of the work as a means of enforcing, 
+# against the work's users, your or third parties' 
+# legal rights to forbid circumvention of technological measures.
 
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES 
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES 
+# OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR 
+# BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES 
+# OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, 
+# DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, 
+# NEGLIGENCE OR OTHER TORTIOUS ACTION, 
+# ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE
 
+if [ $# -lt 2 ]; then
+    echo Usage: $0 "<job-descriptor> <filename>"
+    exit 1
+fi
 set -e # bah error checking who wants that
+
+
+source mlaar.conf.in
+
+if [ -a $QUEUEDIR/tip ]; then
+    
+    JOBID=`cat $QUEUEDIR/tip`
+    JOBID=$(($JOBID + 1))
+fi
+## Actual Code starts here
+
+# make the proper dirs if do not exist
+mkdir -p $JOBDIR
+mkdir -p $JOBDIR/last
+mkdir -p $QUEUEDIR
+mkdir -p $QUEUEDIR/done
+mkdir -p $ATTICDIR
+mv $JOBDIR/* $ATTICDIR
 echo "M. Arnold Logicistics Audiobook renderer"
 echo "This is a shittastic hax"
 echo "To get off of Windows 2000 ActiveX stuff"
 echo "Fix Me!"
 echo "This annoying log message brought to you by"
 echo "The Letter F and the Number 0x75"
-rm -f /srv/audiorender/current/*
-JOBID=`cat /dev/urandom | tr -dc '0-9' | fold  -w 5 | head -1`
 
-# We want jobid to be random because we lack state
-#
-
-CHUNKSIZE=10240 # 10K
-cp $1 /srv/audiorender/current/src.txt
-cd /srv/audiorender/current
-echo "$(date -R) Start Job $JOBID" >> /srv/audiorender/jdone/jobcomp.log
+cp $2 $JOBDIR/src.txt
+cd $JOBDIR
+echo "$(date -R) Start Job $JOBID" 
 pwd
-echo $JOBID > ../thisjob
+echo $JOBID > $QUEUEDIR/tip
 split -b $CHUNKSIZE src.txt  doc.$JOBID
 
 for dcs in $(ls doc.*) 
@@ -41,16 +73,17 @@ NC=0
 for wv in $(ls *.wav)
 do
 	echo "Encoding $wv"
+	# really bad way to do this
 	NC=$(($NC + 1))
-	lame -v -V 2 -b 16 $wv "MALAR_$JOBID_$NC.mp3"
+        jobdesc="$1_0$NC"
+	lame -v -V 2 -b 16 $wv "$jobdesc.mp3"
 
 done
 
 ls *.mp3 > "MALAR_$JOBID.m3u"
 
-zip -r "MALAR_$JOBID.zip" $(ls *.mp3 *.m3u)
-cp *.zip /srv/audiorender/jdone/
-echo "$(date -R) Finished Job $JOBID" >> /srv/audiorender/jobcomp.log
-rm *
+zip -r "MALAR_$1.zip" $(ls *.mp3 *.m3u)
+cp *.zip $QUEUEDIR/done
+echo "$(date -R) Finished Job $JOBID" 
+mv * $ATTICDIR
 cd
-
