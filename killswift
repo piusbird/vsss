@@ -1,0 +1,26 @@
+
+#!/bin/bash
+
+set -e
+
+echo "This will stop all current speech output"
+echo "Are you sure you want to"
+
+echo "list is:"
+pgrep swift.bin
+
+ak="kill -9 $(pgrep swift.bin)"
+read cmd
+
+case "$cmd" in
+
+	yes|Yes)
+		$ak
+		;;
+	y|Y)
+		$ak
+		;;
+	*)
+		echo "Operation Aborted"
+		exit 1
+esac
