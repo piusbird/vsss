@@ -36,6 +36,15 @@ from gi.repository import Gtk, Gdk
 import dbus
 import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
+import os, sys
+import signal
+
+class NullDevice:
+    def write(self, s):
+            pass
+
+def hup_handle(sig, fr):
+    sys.exit()
 
 class MiniKlipper(dbus.service.Object):
     def __init__(self):
@@ -50,8 +59,32 @@ class MiniKlipper(dbus.service.Object):
         if text == None:
             return "Nothing to read"
         return text
+    
+    @dbus.service.method('org.marnold.mklip')
+    def getPid(self):
         
+        pidstr = str(os.getpid())
+        return pidstr
+    
+        
+pid = os.fork() ## Hmmm this looks an awful lot like... C
 
+if pid:
+        os._exit(0) # kill the parent
+else:
+        ## directions say this will stop exceptions while
+        ## deamonized. Which would be bad
+        os.setpgrp()
+        os.umask(0)
+        
+        print os.getpid() # to aid in stoping the server
+        # Run silent, run deep
+        sys.stdin.close() 
+        sys.stdout = NullDevice()
+        sys.stderr = NullDevice()
+
+signal.signal(signal.SIGHUP, hup_handle)
+signal.signal(signal.SIGTERM, hup_handle)
 DBusGMainLoop(set_as_default=True)
 myservice = MiniKlipper()
 Gtk.main() 
