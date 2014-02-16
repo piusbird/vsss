@@ -72,7 +72,7 @@ case "$cmd" in
         m)
 	    work=`pwd`
             cd $BASEDIR
-	    env rc
+	    env sh
 	    cd $work
             ;;
          
