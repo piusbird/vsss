@@ -75,7 +75,7 @@ do
    swift -m text -f $dcs -o $dcs.wav
 done
 ) & # Oh look multi-threaded shell scripting >;)
-progbar_data swift.bin | widget_prog "Book $1" "Rendering audio"
+progbar_data swift.bin | widget_prog "Rendering audio" "Book $1"
 
 NC=0
 for wv in $(ls *.wav)
