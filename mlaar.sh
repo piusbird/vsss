@@ -34,7 +34,7 @@ set -e # bah error checking who wants that
 
 
 source mlaar.conf.in
-
+source vsss_lib.sh
 if [ -a $QUEUEDIR/tip ]; then
     
     JOBID=`cat $QUEUEDIR/tip`
@@ -49,12 +49,19 @@ mkdir -p $QUEUEDIR
 mkdir -p $QUEUEDIR/done
 mkdir -p $ATTICDIR
 mv $JOBDIR/* $ATTICDIR
+
 echo "M. Arnold Logicistics Audiobook renderer"
-echo "This is a shittastic hax"
-echo "To get off of Windows 2000 ActiveX stuff"
-echo "Fix Me!"
-echo "This annoying log message brought to you by"
-echo "The Letter F and the Number 0x75"
+echo "Lord have Mercy"
+echo "Christ Have Mercy"
+echo "Lord we beseech the"
+echo "Grant us O King of the Universe"
+echo "That through the intercession of Saint Thomas Aquinus"
+echo "This humble hax may have sublime flow and logical consistancy"
+echo "Protect o Sprit the feble senses of the user"
+echo "So that he does not through his inevitible error"
+echo "Cause the machine to become b0rked"
+echo "Amen"
+echo "(;" 
 
 cp $2 $JOBDIR/src.txt
 cd $JOBDIR
@@ -62,12 +69,13 @@ echo "$(date -R) Start Job $JOBID"
 pwd
 echo $JOBID > $QUEUEDIR/tip
 split -b $CHUNKSIZE src.txt  doc.$JOBID
-
+(
 for dcs in $(ls doc.*) 
 do
-   echo "Rendering Chunk $dcs"
    swift -m text -f $dcs -o $dcs.wav
 done
+) & # Oh look multi-threaded shell scripting >;)
+progbar_data swift.bin | widget_prog "Book $1" "Rendering audio"
 
 NC=0
 for wv in $(ls *.wav)
@@ -80,7 +88,7 @@ do
 
 done
 
-ls *.mp3 > "MALAR_$JOBID.m3u"
+ls *.mp3 | sort -t '_' -k2 -g > "MALAR_$JOBID.m3u"
 
 zip -r "MALAR_$1.zip" $(ls *.mp3 *.m3u)
 cp *.zip $QUEUEDIR/done

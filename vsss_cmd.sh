@@ -21,6 +21,19 @@ SNARF_CMD="qdbus org.marnold.mklip /org/marnold/mklip getClipboardContents"
 OURFILE=""
 WATCH=`true`
 BASEDIR="$HOME/.vsss"
+mkfil() {
+    
+    cd $BASEDIR
+    cat <<STP > $BASEDIR/filter.sh
+      #!/bin/bash
+      set -e
+      
+      sed -i 's:-:fixme::g' active
+STP
+   
+    pluma $BASEDIR/filter.sh
+    chmod +x filter.sh
+}
 
 clr() {
 	rm -f $BASEDIR/*
@@ -73,7 +86,7 @@ case "$cmd" in
 	;;
 	e)
 	echo $OURFILE
-	acme $BASEDIR/active
+	pluma $BASEDIR/active
 	;;
 	q|Q)
 	clr
@@ -94,8 +107,28 @@ case "$cmd" in
 	n)
 	clr
 	echo "Session History Cleared"
-
 	;; 
+	
+	f)
+            if ! [  -a $BASEDIR/filter.sh ]; then
+            
+                mkfil
+            
+            fi
+        cd $BASEDIR
+        pwd
+        ./filter.sh
+        cd $work
+        ;;
+        
+        ef)
+        if ! [  -a $BASEDIR/filter.sh ]; then
+            
+                mkfil
+            
+            fi
+        pluma $BASEDIR/filter.sh
+        ;;
         *)
             lexerr
  
