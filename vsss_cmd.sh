@@ -59,7 +59,7 @@ case "$cmd" in
         m)
 	    work=`pwd`
             cd $BASEDIR
-	    env rc
+	    env sh
 	    cd $work
             ;;
          
@@ -73,7 +73,7 @@ case "$cmd" in
 	;;
 	e)
 	echo $OURFILE
-	acme $BASEDIR/active
+	pluma $BASEDIR/active
 	;;
 	q|Q)
 	clr
