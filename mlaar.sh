@@ -87,7 +87,7 @@ do
 
 done
 
-ls *.mp3 > "MALAR_$JOBID.m3u"
+ls *.mp3 | sort -t '_' -k2 -g > "MALAR_$JOBID.m3u"
 
 zip -r "MALAR_$1.zip" $(ls *.mp3 *.m3u)
 cp *.zip $QUEUEDIR/done
