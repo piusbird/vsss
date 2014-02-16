@@ -65,26 +65,36 @@ echo "(;"
 
 cp $2 $JOBDIR/src.txt
 cd $JOBDIR
-echo "$(date -R) Start Job $JOBID" 
+echo "$(date -R) Start Job $JOBID" >> $QUEUEDIR/$JOBID.log 
 pwd
 echo $JOBID > $QUEUEDIR/tip
 split -b $CHUNKSIZE src.txt  doc.$JOBID
+touch $JOBDIR/lock
+
 (
+    chof=$(count_chunks)
+    x="1"
+    rm $JOBDIR/lock
 for dcs in $(ls doc.*) 
 do
-   swift -m text -f $dcs -o $dcs.wav
+   echo "Chunk $x/$chof" >> $QUEUEDIR/$JOBID.log
+   swift -m text -f $dcs -o $dcs.wav &> /dev/null
+   x=$(expr $x + 1)
 done
 ) & # Oh look multi-threaded shell scripting >;)
-progbar_data swift.bin | widget_prog "Rendering audio" "Book $1"
+lockfile_lp; sleep 1
+progbar_data swift.bin | widget_prog "Rendering Audiobook" $1
 
 NC=0
 for wv in $(ls *.wav)
 do
-	echo "Encoding $wv"
+	
 	# really bad way to do this
+	NW=$(ls *.wav | wc -l)
 	NC=$(($NC + 1))
+	echo "Encoding $NC/$NW"
         jobdesc="$1_0$NC"
-	lame -v -V 2 -b 16 $wv "$jobdesc.mp3"
+	lame -v -V 2 -b 16 $wv "$jobdesc.mp3" >> $QUEUEDIR/$JOBID.log
 
 done
 
@@ -92,6 +102,6 @@ ls *.mp3 | sort -t '_' -k2 -g > "MALAR_$JOBID.m3u"
 
 zip -r "MALAR_$1.zip" $(ls *.mp3 *.m3u)
 cp *.zip $QUEUEDIR/done
-echo "$(date -R) Finished Job $JOBID" 
+echo "$(date -R) Finished Job $JOBID" >> $QUEUEDIR/$JOBID.log
 mv * $ATTICDIR
 cd

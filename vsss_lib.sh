@@ -31,6 +31,7 @@
 # Function to output progress bar data for dialog/whiptail 
 # Lifted from http://pseudoscripter.wordpress.com/2012/09/26/whiptail-using-a-progress-gauge/
 # Slight modification for functional use 
+source mlaar.conf.in
 progbar_data() {
 
         i="0"
@@ -39,16 +40,33 @@ progbar_data() {
             proc=$(ps aux | grep -v grep | grep -e "$1")
             if [[ "$proc" == "" ]]; then break; fi
             sleep 1
+            if [[ "$i" == "100" ]]; then
+                i=$(expr $(count_chunks) / $i  )
+            fi
             echo $i
             i=$(expr $i + 1)
         done
         # If it is done then display 100%
         echo 100
-        # Give it some time to display the progress to the user.
-        sleep 2
+        sleep 1
+        
 } 
 
 
 widget_prog() {
      whiptail --title "$1" --gauge "$2" 8 78 0
+}
+
+lockfile_lp() {
+    
+    while (true)
+    do
+        if [[ ! -f $JOBDIR/lock ]]; then break; fi
+        sleep 1
+    done
+}
+
+count_chunks() {
+    
+    ls $JOBDIR/doc.* | wc -l
 }
