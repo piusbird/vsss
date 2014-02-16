@@ -70,20 +70,27 @@ pwd
 echo $JOBID > $QUEUEDIR/tip
 split -b $CHUNKSIZE src.txt  doc.$JOBID
 touch $JOBDIR/lock
-
-(
+render_book()
+{
     chof=$(count_chunks)
     x="1"
     rm $JOBDIR/lock
 for dcs in $(ls doc.*) 
 do
-   echo "Chunk $x/$chof" >> $QUEUEDIR/$JOBID.log
+   echo  $(date -R) "Chunk $x/$chof" >> $QUEUEDIR/$JOBID.log
    swift -m text -f $dcs -o $dcs.wav &> /dev/null
    x=$(expr $x + 1)
 done
-) & # Oh look multi-threaded shell scripting >;)
+}  
 lockfile_lp; sleep 1
-progbar_data swift.bin | widget_prog "Rendering Audiobook" $1
+if [[ -f $QUEUEDIR/thrd ]]; then
+    render_book &
+    progbar_data swift.bin | widget_prog "Rendering Audiobook" $1
+    
+    
+else
+    render_book
+fi
 
 NC=0
 for wv in $(ls *.wav)
