@@ -38,6 +38,8 @@ import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
 import os, sys
 import signal
+import fileinput
+import re
 
 class NullDevice:
     def write(self, s):
@@ -65,7 +67,18 @@ class MiniKlipper(dbus.service.Object):
         
         pidstr = str(os.getpid())
         return pidstr
-    
+	
+	@dbus.service.method('org.marnold.mklip')
+	
+	def getFilteredContent(self, stSrc, stEnd):
+		
+		retStr = ""
+		
+		for line in fileinput.input():
+			line = re.sub(stSrc, stEnd, line.rstrip())
+			retStr += line
+		
+		return retStr    
         
 pid = os.fork() ## Hmmm this looks an awful lot like... C
 
