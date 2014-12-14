@@ -10,5 +10,21 @@
 PLAN9=/usr/local/plan9 export PLAN9
 PATH=$PATH:$PLAN9/bin export PATH
 CMDP=./vsss_cmd.sh
-9term -f $PLAN9/font/times/latin1.bold.10.font $CMDP
+d_font=$PLAN9/font/times/latin1.bold.10.font 
+p_font=/tmp/9fnt/Comic\ Sans\ MS/22/font
+
+9p ls font > /dev/null
+if [ $? -eq 1 ]
+then
+	mkdir -p /tmp/9fnt
+	fontsrv -m /tmp/9fnt &
+	font=$p_font export font
+elif [ $? -eq 127 ]
+then
+	echo "Error no font server found reverting to ugly"
+	font=$d_font export font
+else
+	font=$p_font export font
+fi
+9term   $CMDP
 

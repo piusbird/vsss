@@ -34,20 +34,29 @@ snarf() {
 	OURFILE=`mktemp --tmpdir=$BASEDIR`
 	ln -sf $OURFILE $BASEDIR/active
 	$SNARF_CMD > $OURFILE
-	cat $OURFILE
+	cat $OURFILE | nobs
 
 }
 
+act_man() {
+    
+        if test -n "$OURFILE" -a -s "$OURFILE"
+        then
+                ln -sf $OURFILE  $BASEDIR/last
+        fi
+        OURFILE=`mktemp --tmpdir=$BASEDIR`
+        ln -sf $OURFILE $BASEDIR/active
+}
 lexerr() {
 	echo "Invalid Token"
 }
 echo "Very Stupid Speech Shell"
-echo "Version 0.2"
+echo "Version 0.2.4"
 while $WATCH
 do
 	echo 
 	echo
-	echo -n ':'
+	echo -n '>>'
 	read cmd
 	
 case "$cmd" in
@@ -94,8 +103,21 @@ case "$cmd" in
 	n)
 	clr
 	echo "Session History Cleared"
-
-	;; 
+	;;
+	ap)
+	qdbus org.marnold.mklip /org/marnold/mklip amalgmateClipboard
+	echo "Action $cmd Done"
+	;;
+	as)
+        act_man
+        qdbus org.marnold.mklip /org/marnold/mklip getAmalgamatedBuffer > $BASEDIR/active
+        cat $BASEDIR/active
+        padsp swift -m text -f $BASEDIR/active
+        ;;
+        ac)
+        qdbus org.marnold.mklip /org/marnold/mklip clearAmalgamatedBuffer
+        echo "Text Buffer Cleared"
+        ;;
         *)
             lexerr
  
