@@ -1,7 +1,6 @@
-
 JOBID=`cat /dev/urandom | tr -dc '0-9' | fold  -w 5 | head -1` # because we lack state
-JOBDIR=/srv/audiorender/current
-QUEUEDIR=/srv/audiorender/queue
-ATTICDIR=/srv/audiorender/attic
-CHUNKSIZE=10240 # 10K
-
+JOBDIR=$HOME/audiorender/current
+QUEUEDIR=$HOME/audiorender/queue
+ATTICDIR=$HOME/audiorender/attic
+CHUNKSIZE=50240 # 10K
+VOX="David"

@@ -64,31 +64,57 @@ echo "Amen"
 echo "(;" 
 
 cp $2 $JOBDIR/src.txt
+if [ -s $2.info ]; then
+	cp $2.info $JOBDIR/metaData.info
+else
+
+	cat << EOF > $JOBDIR/metaData.info
+	BOOK="$1"
+	AUTHOR="Matt's Audiobook Geneeration Tool"
+	YEAR="2015"
+	SHELFNO="0A0.01.$JOBID"
+EOF
+	
+fi  
 cd $JOBDIR
 echo "$(date -R) Start Job $JOBID" 
 pwd
 echo $JOBID > $QUEUEDIR/tip
 split -b $CHUNKSIZE src.txt  doc.$JOBID
 
-for dcs in $(ls doc.*) 
+for dcs in doc.*
 do
    echo "Rendering Chunk $dcs"
-   swift -m text -f $dcs -o $dcs.wav
+   swift -m text -n $VOX -f $dcs -o $dcs.wav
 done
 
 NC=0
-for wv in $(ls *.wav)
+PARTNUM=0
+
+source $JOBDIR/metaData.info
+for wv in *.wav
 do
+	
 	echo "Encoding $wv"
 	# really bad way to do this
 	NC=$(($NC + 1))
-        jobdesc="$1_0$NC"
-	lame -v -V 2 -b 16 $wv "$jobdesc.mp3"
+        printf -v encname '%s_part%d.mp3' "$1"  "$NC"
+	lame -v -V 2 -b 16 $wv "$encname"
+	printf -v trtitle "%s Part %d" "$1" "$NC"
+	id3tool -a "$BOOK" "$encname"
+	id3tool -y "$YEAR" "$encname"
+	id3tool -r "$AUTHOR" "$encname"
+	id3tool -t "$trtitle" "$encname"
+	id3tool -n "$SHELNO" "$encname"
+	id3tool -c $NC "$encname"
 
 done
 
-ls *.mp3 | sort -t '_' -k2 -g > "MALAR_$JOBID.m3u"
-
+# Fix issue with sort order
+cat /dev/null > "MALAR_$1.m3u"
+find . -iname "$1_part?.mp3" -type f | sed 's:./::g' | sort  >> "MALAR_$1.m3u"
+find . -iname "$1_part??.mp3" -type f | sed 's:./::g' | sort  >> "MALAR_$1.m3u"
+find . -iname "$1_part???.mp3" -type f | sed 's:./::g' | sort  >> "MALAR_$1.m3u"
 zip -r "MALAR_$1.zip" $(ls *.mp3 *.m3u)
 cp *.zip $QUEUEDIR/done
 echo "$(date -R) Finished Job $JOBID" 
