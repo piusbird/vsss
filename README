@@ -1,32 +1,20 @@
-vsss: A Very Simple Speech Shell
+vsss:  Very Simple Speech Services
 ================================
 
-    vsss is a script for controlling a software speech synthesizer such as espeak or swift. These programs have characteristics that make
-    it nearly impossible to control from a modern terminal emulator. There are of course Graphical User Interfaces to such software -
-    however are all stink, or haven't been updated since the days when OSS was still current. This script is designed to be used -
-    with a dumb terminal emulator such as 9term or xterm, smarter TMs  (Gnome terminal, KConsole, etc) will not work as they have -
-    more complicated interrupt handling, and input buffering. 
 
-    vsss depends on the Plan 9 User Space currently see http://swtch.com/plan9port/ but should be easy to modify if -
-    you don't want the plan9 user space, although I can't think of any reason why you wouldn't :) At any rate once you -
-    have p9p installed or if you're self loathing is so intense that you have decided to remove all the fun bits.
-    and you launch the script you will be greeted by the friendliest user interface in the history of the world to wit 
+  This git repository contains a set of tools I use to help in my daily work and life.
+  Living with an obscure visual impairment, While i am not totally blind. My condition makes doing simple things like Reading, Driving, and other such tasks difficult to impossible.
+  While software to address my needs does exist, it is almost always bloatware designed to lock you into a specific vendor, and is naturally quite expensive
+  and the last time a major vendor supported any kind of Unix was, was 27 years ago.
+  And as a young hip open source, Professional that just cramps my style :)
+  So here for your enjoyment is my attempt to replicate a ten thousand dollar software suite using shell scripts.
+  Naturally you will find it works better then Kurzweil, and core dumps less then RW Gold  :)
+  
+  WARNING: These tools are by their very nature constantly changing, seemingly every machine i own has it's own local modifications. I make periodic attempts to clean things up a bit. But you may find that these scripts don't work for you as written
+  I've tried to comment things obsessively so it's easy customize to suit your needs.
+  Just be aware some assembly is required. If you make anything interesting send a pull request my way :)
 
-                Very Stupid Speech Shell
-                Version 0.2
+ Enjoy 
 
+ -- Matt Arnold Sat, 03 Jan 2015 03:58:18 -0500
 
-                :
-    The colon tells you that the program is waiting for commands which for your convince are a maximum of two letters long
-
-    Command:            WTF?
-    s|ss                Snarf 'n' say copy clipboard text to a new snarf buffer, speak snarf buffer
-    m                   Mangle: start a sub shell
-    e                   starts an editor on the current snarf buffer 
-    r                   speak active snarf buffer
-    l                   load clipboard text into the active snarf buffer
-    b                   recall the contents of the last snarf buffer after s|l|c
-    sc                  clear the screen leaving snarf buffers intact
-    c                   clear the active snarf buffer
-    n                   Nuke: Clear all active and non-active buffers from the session
-    q or Q              quit

@@ -1,0 +1,41 @@
+The vsss speech shell
+--------------------
+
+    vsss is a script for controlling a software speech synthesizer such as espeak or swift. These programs have characteristics that make
+    it nearly impossible to control from a modern terminal emulator. There are of course Graphical User Interfaces to such software -
+    however are all stink, or haven't been updated since the days when OSS was still current. This script is designed to be used -
+    with a dumb terminal emulator such as 9term or xterm, smarter TMs  (Gnome terminal, KConsole, etc) will not work as they have -
+    more complicated interrupt handling, and input buffering. 
+
+    The launcher I've written for the command interpreter depends on Plan 9 User Space currently see http://swtch.com/plan9port/ but should be easy to modify if -
+    you don't want the plan9 user space, although I can't think of any reason why you wouldn't :) At any rate once you -
+    have p9p installed or if you're self loathing is so intense that you have decided to remove all the fun bits.
+    Such as non mono-space fonts and less sucky handling of Unicode
+    On launching the script you will be greeted by the friendliest user interface in the history of the world to wit. Or maybe an error see below for details.
+
+
+		Very Stupid Speech Shell
+                Version 0.2
+
+
+                :
+    The colon tells you that the program is waiting for commands which for your convince are a maximum of two letters long
+
+    Command:            WTF?
+    s|ss                Snarf 'n' say copy clipboard text to a new snarf buffer, speak snarf buffer
+    m                   Mangle: start a sub shell
+    e                   starts an editor on the current snarf buffer 
+    r                   speak active snarf buffer
+    l                   load clipboard text into the active snarf buffer
+    b                   recall the contents of the last snarf buffer after s|l|c
+    sc                  clear the screen leaving snarf buffers intact
+    c                   clear the active snarf buffer
+    n                   Nuke: Clear all active and non-active buffers from the session
+    q or Q              quit
+
+
+
+
+There will sometimes be an error in 9term's initdraw and it will complain about
+the directory /tmp/9fnt to fix do kill $(pgrep fontsrv); fontsrv -m /tmp/9fnt &
+This is somehow related to how the 9p protocol and FUSE interact and i will fix it sometime in the near future

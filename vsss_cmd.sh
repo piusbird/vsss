@@ -23,19 +23,21 @@ SNARF_CMD="qdbus org.marnold.mklip /org/marnold/mklip getClipboardContents"
 OURFILE=""
 WATCH=`true`
 BASEDIR="$HOME/.vsss"
+SESSIONDIR="$BASEDIR/session"
 mkdir -p $BASEDIR
+mkdir -p $SESSIONDIR
 clr() {
-	rm -f $BASEDIR/*
+	rm -f $SESSIONDIR/*
 }
 
 snarf() {
 	if test -n "$OURFILE" -a -s "$OURFILE"
 	then
-		ln -sf $OURFILE  $BASEDIR/last
+		ln -sf $OURFILE  $SESSIONDIR/last
 	fi
 	ndp=`what_name`
-	OURFILE=`kytemp $BASEDIR $ndp `
-	ln -sf $OURFILE $BASEDIR/active
+	OURFILE=`kytemp $SESSIONDIR $ndp `
+	ln -sf $OURFILE $SESSIONDIR/active
 	$SNARF_CMD > $OURFILE
 	cat $OURFILE | nobs
 
@@ -45,11 +47,11 @@ act_man() {
     
         if test -n "$OURFILE" -a -s "$OURFILE"
         then
-                ln -sf $OURFILE  $BASEDIR/last
+                ln -sf $OURFILE  $SESSIONDIR/last
         fi
 	ndp=`what_name`
-        OURFILE=`kytemp $BASEDIR $ndp`
-        ln -sf $OURFILE $BASEDIR/active
+        OURFILE=`kytemp $SESSIONDIR $ndp`
+        ln -sf $OURFILE $SESSIONDIR/active
 }
 lexerr() {
 	echo "Invalid Token"
@@ -66,7 +68,7 @@ do
 case "$cmd" in
         ss|s)
             snarf
-	    $audio_bckend swift -n $VOX -m text -f $BASEDIR/active  
+	    $audio_bckend swift -n $VOX -m text -f $SESSIONDIR/active  
 
             ;;
          
@@ -78,8 +80,8 @@ case "$cmd" in
             ;;
          
         c)
-	cat $BASEDIR/active > $BASEDIR/last
-	cat /dev/null > $BASEDIR/active
+	cat $SESSIONDIR/active > $SESSIONDIR/last
+	cat /dev/null > $SESSIONDIR/active
 	;;
 	
 	sc)
@@ -87,7 +89,7 @@ case "$cmd" in
 	;;
 	e)
 	echo $OURFILE
-	pluma $BASEDIR/active
+	pluma $SESSIONDIR/active
 	;;
 	q|Q)
 	clr
@@ -101,7 +103,7 @@ case "$cmd" in
 	snarf
 	;;
 	b)
-	cat $BASEDIR/last > $BASEDIR/active
+	cat $SESSIONDIR/last > $SESSIONDIR/active
 	echo "Head Reset to previous"
 	;;
 
@@ -115,9 +117,9 @@ case "$cmd" in
 	;;
 	as)
         act_man
-        qdbus org.marnold.mklip /org/marnold/mklip getAmalgamatedBuffer > $BASEDIR/active
-        cat $BASEDIR/active
-        aoss swift -m text -f $BASEDIR/active
+        qdbus org.marnold.mklip /org/marnold/mklip getAmalgamatedBuffer > $SESSIONDIR/active
+        cat $SESSIONDIR/active
+        aoss swift -m text -f $SESSIONDIR/active
         ;;
         ac)
         qdbus org.marnold.mklip /org/marnold/mklip clearAmalgamatedBuffer
