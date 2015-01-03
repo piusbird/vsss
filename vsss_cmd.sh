@@ -62,7 +62,7 @@ do
 case "$cmd" in
         ss|s)
             snarf
-	    padsp swift -m text -f $BASEDIR/active  
+	    padsp swift -n David -m text -f $BASEDIR/active  
             ;;
          
         m)
@@ -90,7 +90,7 @@ case "$cmd" in
 	;;
 	r)
 	cat $OURFILE
-	padsp swift -m text -f $BASEDIR/active
+	padsp swift -n David -m text -f $BASEDIR/active
 	;;
 	l)
 	snarf
@@ -123,3 +123,4 @@ case "$cmd" in
  
 esac
 done
+
