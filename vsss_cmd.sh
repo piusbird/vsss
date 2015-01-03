@@ -5,7 +5,9 @@
 ## Author: Matt Arnold <mattarnold5@gmail.com>
 ## Start Date: 12/20/2013
 ## Modified: 2/15/2014
-
+source vsss_funclib.sh
+VOX="Duncan"
+audio_bckend="padsp"
 ##  We Require Plan 9 from User Space to make this work 
 ##  so insstall it, and adjust these vars accordingly
 ##  I've put in a resonable defualt 
@@ -21,7 +23,7 @@ SNARF_CMD="qdbus org.marnold.mklip /org/marnold/mklip getClipboardContents"
 OURFILE=""
 WATCH=`true`
 BASEDIR="$HOME/.vsss"
-
+mkdir -p $BASEDIR
 clr() {
 	rm -f $BASEDIR/*
 }
@@ -31,7 +33,8 @@ snarf() {
 	then
 		ln -sf $OURFILE  $BASEDIR/last
 	fi
-	OURFILE=`mktemp --tmpdir=$BASEDIR`
+	ndp=`what_name`
+	OURFILE=`kytemp $BASEDIR $ndp `
 	ln -sf $OURFILE $BASEDIR/active
 	$SNARF_CMD > $OURFILE
 	cat $OURFILE | nobs
@@ -44,7 +47,8 @@ act_man() {
         then
                 ln -sf $OURFILE  $BASEDIR/last
         fi
-        OURFILE=`mktemp --tmpdir=$BASEDIR`
+	ndp=`what_name`
+        OURFILE=`kytemp $BASEDIR $ndp`
         ln -sf $OURFILE $BASEDIR/active
 }
 lexerr() {
@@ -62,7 +66,8 @@ do
 case "$cmd" in
         ss|s)
             snarf
-	    padsp swift -n David -m text -f $BASEDIR/active  
+	    $audio_bckend swift -n $VOX -m text -f $BASEDIR/active  
+
             ;;
          
         m)
@@ -90,7 +95,7 @@ case "$cmd" in
 	;;
 	r)
 	cat $OURFILE
-	padsp swift -n David -m text -f $BASEDIR/active
+	$audio_bckend swift -n $VOX -m text -f $OURFILE
 	;;
 	l)
 	snarf
@@ -112,7 +117,7 @@ case "$cmd" in
         act_man
         qdbus org.marnold.mklip /org/marnold/mklip getAmalgamatedBuffer > $BASEDIR/active
         cat $BASEDIR/active
-        padsp swift -m text -f $BASEDIR/active
+        aoss swift -m text -f $BASEDIR/active
         ;;
         ac)
         qdbus org.marnold.mklip /org/marnold/mklip clearAmalgamatedBuffer
