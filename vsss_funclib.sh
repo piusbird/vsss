@@ -39,3 +39,18 @@ what_name() {
 	echo $(date +"%m-%d-%Y").$$
 }
 
+# find_shell_config does what it says
+# i.e find the location of the file containing configuration
+# info for shell
+find_shell_config() {
+
+  if [ -s $1/vsss.conf.in ]
+  then
+	echo $1/vsss.conf.in | tr -s '/'
+  elif [ -s ./vsss.conf.in ]
+  then
+	echo "./vsss.conf.in"
+  else
+	return 1
+fi
+}

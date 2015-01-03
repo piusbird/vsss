@@ -6,8 +6,7 @@
 ## Start Date: 12/20/2013
 ## Modified: 2/15/2014
 source vsss_funclib.sh
-VOX="Duncan"
-audio_bckend="padsp"
+
 ##  We Require Plan 9 from User Space to make this work 
 ##  so insstall it, and adjust these vars accordingly
 ##  I've put in a resonable defualt 
@@ -26,6 +25,9 @@ BASEDIR="$HOME/.vsss"
 SESSIONDIR="$BASEDIR/session"
 mkdir -p $BASEDIR
 mkdir -p $SESSIONDIR
+source `find_shell_config $BASEDIR`
+
+
 clr() {
 	rm -f $SESSIONDIR/*
 }
@@ -68,7 +70,7 @@ do
 case "$cmd" in
         ss|s)
             snarf
-	    $audio_bckend swift -n $VOX -m text -f $SESSIONDIR/active  
+	    speak_bckend $SESSIONDIR/active  
 
             ;;
          
@@ -89,7 +91,7 @@ case "$cmd" in
 	;;
 	e)
 	echo $OURFILE
-	pluma $SESSIONDIR/active
+	$spkedit $SESSIONDIR/active
 	;;
 	q|Q)
 	clr
@@ -97,7 +99,7 @@ case "$cmd" in
 	;;
 	r)
 	cat $OURFILE
-	$audio_bckend swift -n $VOX -m text -f $OURFILE
+	speak_bckend $OURFILE
 	;;
 	l)
 	snarf
@@ -119,7 +121,7 @@ case "$cmd" in
         act_man
         qdbus org.marnold.mklip /org/marnold/mklip getAmalgamatedBuffer > $SESSIONDIR/active
         cat $SESSIONDIR/active
-        aoss swift -m text -f $SESSIONDIR/active
+        speak_bckend $SESSIONDIR/active
         ;;
         ac)
         qdbus org.marnold.mklip /org/marnold/mklip clearAmalgamatedBuffer

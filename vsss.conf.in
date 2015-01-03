@@ -1,0 +1,12 @@
+VOX="David"
+audio_bckend="padsp"
+spkedit="pluma"
+
+speak_bckend() {
+
+
+    $audio_bckend swift -n $VOX -f $1 -m text
+    return 1
+
+}
+
