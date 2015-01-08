@@ -1,5 +1,5 @@
-VOX="David"
-audio_bckend="padsp"
+VOX="Callie"
+audio_bckend="aoss"
 spkedit="pluma"
 
 speak_bckend() {
