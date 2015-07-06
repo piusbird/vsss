@@ -77,7 +77,7 @@ case "$cmd" in
         m)
 	    work=`pwd`
             cd $BASEDIR
-	    env sh
+	    env ksh
 	    cd $work
             ;;
          
