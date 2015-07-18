@@ -1,12 +1,14 @@
-VOX="Callie"
+VOX="David"
 audio_bckend="aoss"
-spkedit="pluma"
-
+spkedit="pluma" 
+QT_SELECT=4; 
+export QT_SELECT
 speak_bckend() {
 
 
-    $audio_bckend swift -n $VOX -f $1 -m text
+    $audio_bckend swift -n $VOX -p "speech/rate=200" -f $1 -m text
     return 1
 
 }
+
 
