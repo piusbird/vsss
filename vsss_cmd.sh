@@ -52,14 +52,14 @@ act_man() {
                 ln -sf $OURFILE  $SESSIONDIR/last
         fi
 	ndp=`what_name`
-        OURFILE=`kytemp $SESSIONDIR $ndp`
-        ln -sf $OURFILE $SESSIONDIR/active
+    OURFILE=`kytemp $SESSIONDIR $ndp`
+    ln -sf $OURFILE $SESSIONDIR/active
 }
 lexerr() {
 	echo "Invalid Token"
 }
 echo "Very Stupid Speech Shell"
-echo "Version 0.2.4"
+echo "Version 0.3.2"
 while $WATCH
 do
 	echo 
@@ -127,6 +127,29 @@ case "$cmd" in
         qdbus org.marnold.mklip /org/marnold/mklip clearAmalgamatedBuffer
         echo "Text Buffer Cleared"
         ;;
+	i)
+	let "rate = $rate + 5"
+	echo "Rate is: $rate"
+	;;
+	k)
+	let "rate = $rate - 5"
+	echo "Rate is: $rate"
+	;;
+	vox)
+	select vx in  /opt/swift/voices/* exit
+	do 
+		case $vx in
+			exit)
+			break
+			;;
+			*)
+			echo `basename $vx`
+			VOX=`basename $vx`
+			break
+			;;
+		esac
+	done
+	;;
         *)
             lexerr
  

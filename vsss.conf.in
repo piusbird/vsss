@@ -1,14 +1,21 @@
 VOX="David" 
 audio_bckend="padsp" 
-
+rate=190
 spkedit="pluma" 
 QT_SELECT=4; 
 export QT_SELECT
 
 speak_bckend() {
 
-
-    $audio_bckend swift -n $VOX -p "speech/rate=200" -f $1 -m text
+    if [ -f /tmp/vsss.lock ]
+    then
+	echo "Speech output is currently in use"
+	return 0
+    else
+	touch /tmp/vsss.lock
+    fi
+    $audio_bckend swift -n $VOX -p "speech/rate=$rate" -f $1 -m text
+    rm /tmp/vsss.lock
     return 1
 
 }
