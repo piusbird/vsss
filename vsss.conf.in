@@ -1,6 +1,6 @@
-VOX="David" 
+VOX="Callie" 
 audio_bckend="padsp" 
-rate=190
+rate=200
 spkedit="pluma" 
 QT_SELECT=4; 
 export QT_SELECT

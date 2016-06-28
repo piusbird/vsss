@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 ## Moduule vsss_cmd.sh
@@ -29,7 +30,12 @@ source `find_shell_config $BASEDIR`
 
 
 clr() {
+	#rm -f $SESSIONDIR/*
+	xz $SESSIONDIR/*
+	mkdir -p $HOME/.vsss/old/
+	mv $SESSIONDIR/*.xz $HOME/.vsss/old
 	rm -f $SESSIONDIR/*
+
 }
 
 snarf() {
@@ -41,7 +47,7 @@ snarf() {
 	OURFILE=`kytemp $SESSIONDIR $ndp `
 	ln -sf $OURFILE $SESSIONDIR/active
 	$SNARF_CMD > $OURFILE
-	cat $OURFILE | nobs
+        (cat -n $OURFILE | nobs)
 
 }
 
@@ -64,7 +70,7 @@ while $WATCH
 do
 	echo 
 	echo
-	echo -n '>>'
+	echo -n '>>>>'
 	read cmd
 	
 case "$cmd" in
@@ -98,7 +104,7 @@ case "$cmd" in
 	exit 0
 	;;
 	r)
-	cat $OURFILE
+	cat -n $OURFILE
 	speak_bckend $OURFILE
 	;;
 	l)
@@ -135,6 +141,10 @@ case "$cmd" in
 	let "rate = $rate - 5"
 	echo "Rate is: $rate"
 	;;
+	t)
+	kill -9 $COPROC_PID
+	rm /tmp/vsss.lock
+	;;
 	vox)
 	select vx in  /opt/swift/voices/* exit
 	do 
@@ -150,7 +160,17 @@ case "$cmd" in
 		esac
 	done
 	;;
-        *)
+        j)
+	act_man
+	echo -n ':? '
+	read jmp
+	cat $SESSIONDIR/last | sed -n "$jmp,$ p" > $SESSIONDIR/active
+	cat $SESSIONDIR/active
+	speak_bckend $SESSIONDIR/active
+	cat $SESSIONDIR/last > $SESSIONDIR/active
+	;;
+
+	*)
             lexerr
  
 esac

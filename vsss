@@ -27,4 +27,4 @@ else
 	font=$p_font export font
 fi
 9term   $CMDP
-
+echo "Script End"
