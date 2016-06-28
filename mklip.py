@@ -40,7 +40,7 @@ import os, sys
 import signal
 import fileinput
 import re
-
+import pickle
 class NullDevice:
     def write(self, s):
         pass
@@ -108,7 +108,25 @@ class MiniKlipper(dbus.service.Object):
     @dbus.service.method("org.marnold.mklip")
     def amalgmateClipboard(self):
         self.toAmalgmatedBuffer(self.getClipboardContents())
-
+    
+    @dbus.service.method("org.marnold.mklip")
+    def autoprocClipboardContents(self):
+      text = self.boardxs.wait_for_text()
+      if text == None:
+	return "Nothing to Read."
+      fl = None
+      try:
+	fl = pickle.load(open("filter.p", "rb"))
+	newtxt = text
+	for f in fl:
+	  newtxt = f.sub("filtered, see visual mode.", newtxt)
+	return newtxt
+      except IOError as e:
+	return "error could not find filter rules."
+      return "shouldn't be here."
+    
+      
+      
 pid = os.fork() ## Hmmm this looks an awful lot like... C
 
 if pid:
