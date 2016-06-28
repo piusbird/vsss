@@ -11,7 +11,7 @@ PLAN9=/usr/local/plan9 export PLAN9
 PATH=$PATH:$PLAN9/bin export PATH
 CMDP=./vsss_cmd.sh
 d_font=$PLAN9/font/times/latin1.bold.10.font 
-p_font=/tmp/9fnt/Comic\ Sans\ MS/22/font
+p_font=/tmp/9fnt/Prestige\ Elite\ Normal/20
 
 9p ls font > /dev/null
 if [ $? -eq 1 ]

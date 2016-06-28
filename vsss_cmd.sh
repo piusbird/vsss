@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Moduule vsss_cmd.sh
+## Module vsss_cmd.sh
 ## Purpose: Command interpitor for very stupid speech shell
 ## Author: Matt Arnold <mattarnold5@gmail.com>
 ## Start Date: 12/20/2013
@@ -17,7 +17,7 @@ PATH=$PATH:$PLAN9/bin export PATH
 # Ways of doing this will very depending on desktop env/window managers
 
 SNARF_CMD="qdbus org.marnold.mklip /org/marnold/mklip getClipboardContents"
-
+PSNARF_CMD="qdbus org.marnold.mklip /org/marnold/mklip autoprocClipboardContents"
 
 OURFILE=""
 WATCH=`true`
@@ -32,6 +32,9 @@ clr() {
 	rm -f $SESSIONDIR/*
 }
 
+
+
+
 snarf() {
 	if test -n "$OURFILE" -a -s "$OURFILE"
 	then
@@ -41,9 +44,24 @@ snarf() {
 	OURFILE=`kytemp $SESSIONDIR $ndp `
 	ln -sf $OURFILE $SESSIONDIR/active
 	$SNARF_CMD > $OURFILE
-	cat $OURFILE | nobs
+	cat $OURFILE | nobs | nl
 
 }
+psnarf() {
+	if test -n "$OURFILE" -a -s "$OURFILE"
+	then
+		ln -sf $OURFILE  $SESSIONDIR/last
+	fi
+	ndp=`what_name`
+	OURFILE=`kytemp $SESSIONDIR $ndp `
+	ln -sf $OURFILE $SESSIONDIR/active
+	dspn=`echo $ndp.d`
+	DISPFILE=`kytemp $SESSIONDIR $dspn`
+	$PSNARF_CMD > $OURFILE
+	cat $DISPFILE | nobs | nl
+
+}
+
 
 act_man() {
     
@@ -58,8 +76,9 @@ act_man() {
 lexerr() {
 	echo "Invalid Token"
 }
+
 echo "Very Stupid Speech Shell"
-echo "Version 0.2.4"
+echo "Version 0.2.8.2"
 while $WATCH
 do
 	echo 
@@ -77,7 +96,7 @@ case "$cmd" in
         m)
 	    work=`pwd`
             cd $BASEDIR
-	    env ksh
+	    env rc
 	    cd $work
             ;;
          
@@ -127,6 +146,19 @@ case "$cmd" in
         qdbus org.marnold.mklip /org/marnold/mklip clearAmalgamatedBuffer
         echo "Text Buffer Cleared"
         ;;
+	i)
+	let "rate = $rate + 5"
+	echo "Rate is: $rate"
+	;;
+	k)
+	let "rate = $rate - 5"
+	echo "Rate is: $rate"
+	;;
+	fs)
+	psnarf
+	speak_bckend $SESSIONDIR/active  
+
+	;;
         *)
             lexerr
  

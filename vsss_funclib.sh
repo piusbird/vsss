@@ -1,9 +1,11 @@
 # Common functions for vsss
 # Matt Arnold (C) 2014
 
-## kytemp replace mktemp with something 
-##  Cross platform with features to aid
-## Speech sesseion search
+##########################################
+## kytemp replace mktemp with something ## 
+##  Cross platform with features to aid ##
+## Speech sesseion search               ##
+##########################################
 kytemp() {
 
 	if [ "$#" -ne 2 ]
@@ -12,18 +14,19 @@ kytemp() {
 		return 1
 	fi
 
-	nounce=`cat /dev/urandom | tr  -dc [a-zA-Z0-9] | fold -b8 | head -1`
+	nounce=`cat /dev/urandom | tr  -dc 'a-zA-Z0-9' | fold -b8 | head -1`
 	filename=$(echo $2.$nounce)
 	touch $1/$filename
 	echo "$1/$filename"  | tr -s '/'
 }
 
-## what_name determines what key name to give to temp files 
-# Use with kytemp
-# This function uses two env variables to deterimeine what
-# Descriptive name to give temp files
-# CKY beats TAG format of filenames is $(echo whatname).$nounce
-###
+#################################################################
+# what_name determines what key name to give to temp files      #
+# Use with kytemp						#
+# This function uses two env variables to deterimeine what	#
+# Descriptive name to give temp files                           #
+# CKY beats TAG format of filenames is $(echo whatname).$nounce #
+#################################################################
 what_name() {
 
 	if [ -n "$CKY" ]
@@ -39,9 +42,12 @@ what_name() {
 	echo $(date +"%m-%d-%Y").$$
 }
 
-# find_shell_config does what it says
-# i.e find the location of the file containing configuration
-# info for shell
+##############################################################
+# find_shell_config does what it says                        #
+# i.e find the location of the file containing configuration #
+# info for shell                                             #
+# 							     #
+##############################################################
 find_shell_config() {
 
   if [ -s $1/vsss.conf.in ]
@@ -53,4 +59,8 @@ find_shell_config() {
   else
 	return 1
 fi
+}
+jump_txt() {
+
+	grep 
 }
