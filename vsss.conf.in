@@ -14,7 +14,7 @@ speak_bckend() {
     else
 	touch /tmp/vsss.lock
     fi
-    $audio_bckend swift -n $VOX -p "speech/rate=$rate" -f $1 -m text -t | ./colorize-pipe 
+    $audio_bckend swift -n $VOX -p "speech/rate=$rate" -f $1 -m text -t | colorize-pipe 
     rm /tmp/vsss.lock
     return 1
 
