@@ -6,7 +6,7 @@
 ## Author: Matt Arnold <mattarnold5@gmail.com>
 ## Start Date: 12/20/2013
 ## Modified: 2/15/2014
-source vsss_funclib.sh
+.  ./vsss_funclib.sh
 
 ##  We Require Plan 9 from User Space to make this work 
 ##  so insstall it, and adjust these vars accordingly
@@ -26,7 +26,7 @@ BASEDIR="$HOME/.vsss"
 SESSIONDIR="$BASEDIR/session"
 mkdir -p $BASEDIR
 mkdir -p $SESSIONDIR
-source `find_shell_config $BASEDIR`
+. `find_shell_config $BASEDIR`
 
 
 clr() {
@@ -142,8 +142,7 @@ case "$cmd" in
 	echo "Rate is: $rate"
 	;;
 	t)
-	kill -9 $COPROC_PID
-	rm /tmp/vsss.lock
+	cat -n $SESSIONDIR/active | nobs
 	;;
 	vox)
 	select vx in  /opt/swift/voices/* exit
@@ -165,7 +164,7 @@ case "$cmd" in
 	echo -n ':? '
 	read jmp
 	cat $SESSIONDIR/last | sed -n "$jmp,$ p" > $SESSIONDIR/active
-	cat $SESSIONDIR/active
+	#cat $SESSIONDIR/active
 	speak_bckend $SESSIONDIR/active
 	cat $SESSIONDIR/last > $SESSIONDIR/active
 	;;
