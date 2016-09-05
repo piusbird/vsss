@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 ## Module vsss_cmd.sh
@@ -5,7 +6,7 @@
 ## Author: Matt Arnold <mattarnold5@gmail.com>
 ## Start Date: 12/20/2013
 ## Modified: 2/15/2014
-source vsss_funclib.sh
+.  ./vsss_funclib.sh
 
 ##  We Require Plan 9 from User Space to make this work 
 ##  so insstall it, and adjust these vars accordingly
@@ -25,11 +26,16 @@ BASEDIR="$HOME/.vsss"
 SESSIONDIR="$BASEDIR/session"
 mkdir -p $BASEDIR
 mkdir -p $SESSIONDIR
-source `find_shell_config $BASEDIR`
+. `find_shell_config $BASEDIR`
 
 
 clr() {
+	#rm -f $SESSIONDIR/*
+	xz $SESSIONDIR/*
+	mkdir -p $HOME/.vsss/old/
+	mv $SESSIONDIR/*.xz $HOME/.vsss/old
 	rm -f $SESSIONDIR/*
+
 }
 
 
@@ -58,7 +64,7 @@ psnarf() {
 	dspn=`echo $ndp.d`
 	DISPFILE=`kytemp $SESSIONDIR $dspn`
 	$PSNARF_CMD > $OURFILE
-	cat $DISPFILE | nobs | nl
+        (cat -n $OURFILE | nobs)
 
 }
 
@@ -70,20 +76,20 @@ act_man() {
                 ln -sf $OURFILE  $SESSIONDIR/last
         fi
 	ndp=`what_name`
-        OURFILE=`kytemp $SESSIONDIR $ndp`
-        ln -sf $OURFILE $SESSIONDIR/active
+    OURFILE=`kytemp $SESSIONDIR $ndp`
+    ln -sf $OURFILE $SESSIONDIR/active
 }
 lexerr() {
 	echo "Invalid Token"
 }
 
 echo "Very Stupid Speech Shell"
-echo "Version 0.2.8.2"
+echo "Version 0.3.2"
 while $WATCH
 do
 	echo 
 	echo
-	echo -n '>>'
+	echo -n '>>>>'
 	read cmd
 	
 case "$cmd" in
@@ -117,7 +123,7 @@ case "$cmd" in
 	exit 0
 	;;
 	r)
-	cat $OURFILE
+	cat -n $OURFILE
 	speak_bckend $OURFILE
 	;;
 	l)
@@ -159,7 +165,35 @@ case "$cmd" in
 	speak_bckend $SESSIONDIR/active  
 
 	;;
-        *)
+	t)
+	cat -n $SESSIONDIR/active | nobs
+	;;
+	vox)
+	select vx in  /opt/swift/voices/* exit
+	do 
+		case $vx in
+			exit)
+			break
+			;;
+			*)
+			echo `basename $vx`
+			VOX=`basename $vx`
+			break
+			;;
+		esac
+	done
+	;;
+        j)
+	act_man
+	echo -n ':? '
+	read jmp
+	cat $SESSIONDIR/last | sed -n "$jmp,$ p" > $SESSIONDIR/active
+	#cat $SESSIONDIR/active
+	speak_bckend $SESSIONDIR/active
+	cat $SESSIONDIR/last > $SESSIONDIR/active
+	;;
+
+	*)
             lexerr
  
 esac

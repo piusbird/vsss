@@ -1,13 +1,22 @@
 VOX="David"
 rate=190
+PIPE_COLOR="1;33;44m"
+export PIPE_COLOR
 audio_bckend="aoss"
 spkedit="pluma" 
 QT_SELECT=4; 
 export QT_SELECT
 speak_bckend() {
 
-
-    $audio_bckend swift -n $VOX -p "speech/rate=$rate" -f $1 -m text
+    if [ -f /tmp/vsss.lock ]
+    then
+	echo "Speech output is currently in use"
+	return 0
+    else
+	touch /tmp/vsss.lock
+    fi
+    $audio_bckend swift -n $VOX -p "speech/rate=$rate" -f $1 -m text -t | colorize-pipe 
+    rm /tmp/vsss.lock
     return 1
 
 }
