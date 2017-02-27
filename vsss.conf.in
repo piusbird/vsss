@@ -5,6 +5,8 @@ spkedit="pluma"
 QT_SELECT=4; 
 export QT_SELECT
 
+PIPE_COLOR="1;33;44m"
+export PIPE_COLOR
 speak_bckend() {
 
     if [ -f /tmp/vsss.lock ]

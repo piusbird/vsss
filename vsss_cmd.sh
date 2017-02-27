@@ -19,7 +19,7 @@ PATH=$PATH:$PLAN9/bin export PATH
 
 SNARF_CMD="qdbus org.marnold.mklip /org/marnold/mklip getClipboardContents"
 
-
+VERSION="0.3.4+test"
 OURFILE=""
 WATCH=`true`
 BASEDIR="$HOME/.vsss"
@@ -65,7 +65,7 @@ lexerr() {
 	echo "Invalid Token"
 }
 echo "Very Stupid Speech Shell"
-echo "Version 0.3.2"
+echo "Version $VERSION"
 while $WATCH
 do
 	echo 
@@ -100,7 +100,7 @@ case "$cmd" in
 	$spkedit $SESSIONDIR/active
 	;;
 	q|Q)
-	clr
+	
 	exit 0
 	;;
 	r)
@@ -137,12 +137,13 @@ case "$cmd" in
 	let "rate = $rate + 5"
 	echo "Rate is: $rate"
 	;;
+
 	k)
 	let "rate = $rate - 5"
 	echo "Rate is: $rate"
 	;;
 	t)
-	cat -n $SESSIONDIR/active | nobs
+	cat -n $SESSIONDIR/active | nobs | less
 	;;
 	vox)
 	select vx in  /opt/swift/voices/* exit
@@ -167,6 +168,11 @@ case "$cmd" in
 	#cat $SESSIONDIR/active
 	speak_bckend $SESSIONDIR/active
 	cat $SESSIONDIR/last > $SESSIONDIR/active
+	;;
+	x)
+		echo -n ':? '
+		read EDLN
+		sed -i $EDLN $SESSIONDIR/active
 	;;
 
 	*)
