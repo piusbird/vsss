@@ -1,8 +1,8 @@
-VOX="David"
+VOX="Callie"
 rate=190
 PIPE_COLOR="1;33;44m"
 export PIPE_COLOR
-audio_bckend="aoss"
+audio_bckend="padsp"
 spkedit="pluma" 
 QT_SELECT=4; 
 export QT_SELECT
