@@ -83,7 +83,7 @@ lexerr() {
 	echo "Invalid Token"
 }
 
-echo "Very Stupid Speech Shell"
+echo "Very Simple Speech Shell"
 echo "Version $VERSION"
 while $WATCH
 do

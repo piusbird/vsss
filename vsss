@@ -10,21 +10,14 @@
 PLAN9=/usr/local/plan9 export PLAN9
 PATH=$PATH:$PLAN9/bin export PATH
 CMDP=./vsss_cmd.sh
-d_font=$PLAN9/font/times/latin1.bold.10.font 
-p_font=/tmp/9fnt/Prestige\ Elite\ Normal/20
 
-9p ls font > /dev/null
-if [ $? -eq 1 ]
+ms_getpid="qdbus org.marnold.mklip /org/marnold/mklip getPid"
+
+$ms_getpid > /dev/null
+if [ $? -ne 0 ]
 then
-	mkdir -p /tmp/9fnt
-	fontsrv -m /tmp/9fnt &
-	font=$p_font export font
-elif [ $? -eq 127 ]
-then
-	echo "Error no font server found reverting to ugly"
-	font=$d_font export font
+  ./mklip.py
+  $CMDP
 else
-	font=$p_font export font
+   $CMDP
 fi
-9term   $CMDP
-echo "Script End"
