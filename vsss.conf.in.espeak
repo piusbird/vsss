@@ -1,0 +1,17 @@
+# Espeak Version 
+rate=200
+spkedit="nano" 
+speak_bckend() {
+
+    if [ -f /tmp/vsss.lock ]
+    then
+	echo "Speech output is currently in use"
+	return 0
+    else
+	touch /tmp/vsss.lock
+    fi
+    espeak -f $1 -s $rate
+    rm /tmp/vsss.lock
+    return 1
+
+}

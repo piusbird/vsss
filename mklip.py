@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Minimal KDE Klipper service emulator
 # For GNOME, XFCE, LXDE and MATE
-# Part of the Very Shitty Speech Setup
+# Part of the Very Simple Speech Setup
 
 """
 Copyright (c) 2014 Matt Arnold
@@ -36,43 +36,46 @@ from gi.repository import Gtk, Gdk
 import dbus
 import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
-import os, sys
+import os
+import sys
 import signal
 import fileinput
 import re
 import pickle
+
+
 class NullDevice:
     def write(self, s):
         pass
 
+
 def hup_handle(sig, fr):
     sys.exit()
 
+
 class MiniKlipper(dbus.service.Object):
     def __init__(self):
-        bus_name = dbus.service.BusName('org.marnold.mklip', bus=dbus.SessionBus())
+        bus_name = dbus.service.BusName(
+            'org.marnold.mklip', bus=dbus.SessionBus())
         dbus.service.Object.__init__(self, bus_name, '/org/marnold/mklip')
-        self.boardxs =  Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+        self.boardxs = Gtk.Clipboard.get(Gdk.SELECTION_PRIMARY)
         self.amal_buffer = None
 
     @dbus.service.method('org.marnold.mklip')
-
     def getClipboardContents(self):
 
         text = self.boardxs.wait_for_text()
-        if text == None:
+        if text is None:
             return "Nothing to read"
         return text
 
     @dbus.service.method('org.marnold.mklip')
-
     def getPid(self):
 
         pidstr = str(os.getpid())
         return pidstr
 
     @dbus.service.method('org.marnold.mklip')
-
     def getFilteredContent(self, stSrc, stEnd):
 
         retStr = ""
@@ -83,22 +86,17 @@ class MiniKlipper(dbus.service.Object):
             return retStr
 
     @dbus.service.method("org.marnold.mklip")
-
     def getAmalgamatedBuffer(self):
         if self.amal_buffer is None:
             self.amal_buffer = self.getClipboardContents()
 
         return self.amal_buffer
 
-
     @dbus.service.method("org.marnold.mklip")
-    
     def clearAmalgamatedBuffer(self):
         self.amal_buffer = None
 
-
     @dbus.service.method("org.marnold.mklip")
-
     def toAmalgmatedBuffer(self, text):
         if self.amal_buffer is None:
             self.amal_buffer = text
@@ -108,36 +106,35 @@ class MiniKlipper(dbus.service.Object):
     @dbus.service.method("org.marnold.mklip")
     def amalgmateClipboard(self):
         self.toAmalgmatedBuffer(self.getClipboardContents())
-    
+
     @dbus.service.method("org.marnold.mklip")
     def autoprocClipboardContents(self):
-      text = self.boardxs.wait_for_text()
-      if text == None:
-	return "Nothing to Read."
-      fl = None
-      try:
-	fl = pickle.load(open("filter.p", "rb"))
-	newtxt = text
-	for f in fl:
-	  newtxt = f.sub("filtered, see visual mode.", newtxt)
-	return newtxt
-      except IOError as e:
-	return "error could not find filter rules."
-      return "shouldn't be here."
-    
-      
-      
-pid = os.fork() ## Hmmm this looks an awful lot like... C
+        text = self.boardxs.wait_for_text()
+        if text is None:
+            return "Nothing to Read."
+        fl = None
+        try:
+            fl = pickle.load(open("filter.p", "rb"))
+            newtxt = text
+            for f in fl:
+                newtxt = f.sub("filtered, see visual mode.", newtxt)
+            return newtxt
+        except IOError as e:
+            return "error could not find filter rules."
+        return "shouldn't be here."
+
+
+pid = os.fork()  # Hmmm this looks an awful lot like... C
 
 if pid:
-    os._exit(0) # kill the parent
+    os._exit(0)  # kill the parent
 else:
-    ## directions say this will stop exceptions while
-    ## deamonized. Which would be bad
+    # directions say this will stop exceptions while
+    # deamonized. Which would be bad
     os.setpgrp()
     os.umask(0)
 
-    print os.getpid() # to aid in stoping the server
+    print(os.getpid())  # to aid in stoping the server
     # Run silent, run deep
     sys.stdin.close()
     sys.stdout = NullDevice()

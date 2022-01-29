@@ -1,6 +1,6 @@
 VOX="Callie"
 rate=190
-PIPE_COLOR="1;33;44m"
+PIPE_COLOR="1;33;45m"
 export PIPE_COLOR
 audio_bckend="padsp"
 spkedit="pluma" 
@@ -15,7 +15,7 @@ speak_bckend() {
     else
 	touch /tmp/vsss.lock
     fi
-    $audio_bckend swift -n $VOX -p "speech/rate=$rate" -f $1 -m text -t | colorize-pipe 
+    $audio_bckend swift -n $VOX -p "speech/rate=$rate" -f $1 -m text -t | ./pcg 
     rm /tmp/vsss.lock
     return 1
 

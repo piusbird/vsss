@@ -50,7 +50,7 @@ snarf() {
 	OURFILE=`kytemp $SESSIONDIR $ndp `
 	ln -sf $OURFILE $SESSIONDIR/active
 	$SNARF_CMD > $OURFILE
-	cat $OURFILE | nobs | nl
+	cat $OURFILE | nl
 
 }
 psnarf() {
@@ -64,7 +64,7 @@ psnarf() {
 	dspn=`echo $ndp.d`
 	DISPFILE=`kytemp $SESSIONDIR $dspn`
 	$PSNARF_CMD > $OURFILE
-        (cat -n $OURFILE | nobs)
+        (cat -n $OURFILE)
 
 }
 
@@ -167,7 +167,7 @@ case "$cmd" in
 
 	;;
 	t)
-	cat -n $SESSIONDIR/active | nobs | less
+	cat -n $SESSIONDIR/active | less
 	;;
 	vox)
 	select vx in  /opt/swift/voices/* exit

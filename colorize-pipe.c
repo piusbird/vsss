@@ -10,17 +10,20 @@
 * So if you want to use this i accept pull requests 
 *
 */
+
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 #include <stdbool.h>
 #define BUFFSIZE 256
 void sigproc();
 void sigcnt();
 void sigstop();
 char *easc = "\x1b[";
+
 int main(int argc, char *argv[])
 {
 
@@ -51,7 +54,7 @@ int main(int argc, char *argv[])
 				 localtime(&ts));
 			printf("%s: ", timebuf);
 			tsn = false;
-		}
+		} 
 		putchar(c);
 		if (c == '\n') {
 			lc++;
@@ -61,7 +64,10 @@ int main(int argc, char *argv[])
 	time_t end = time(NULL);
 	double secelp = difftime(end, start);
 	double minselp = secelp / 60.0;
-	printf("Elasped Time %f minutes\n", minselp);
+	double roundlp = fmod(secelp, 60.0);
+	int mins = (int) minselp;
+	int secs = (int) roundlp;
+	printf("Elasped Time %d:%02d \n", mins, secs);
 	puts("\x1b[0m");
 	return 0;
 }
