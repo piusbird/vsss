@@ -4,8 +4,6 @@ PIPE_COLOR="1;33;45m"
 export PIPE_COLOR
 audio_bckend="padsp"
 spkedit="pluma" 
-QT_SELECT=4; 
-export QT_SELECT
 speak_bckend() {
 
     if [ -f /tmp/vsss.lock ]
