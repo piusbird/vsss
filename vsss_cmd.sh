@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 ## Module vsss_cmd.sh
@@ -6,11 +5,11 @@
 ## Author: Matt Arnold <mattarnold5@gmail.com>
 ## Start Date: 12/20/2013
 ## Modified: 2/15/2014
-.  ./vsss_funclib.sh
+. ./vsss_funclib.sh
 
-##  We Require Plan 9 from User Space to make this work 
+##  We Require Plan 9 from User Space to make this work
 ##  so insstall it, and adjust these vars accordingly
-##  I've put in a resonable defualt 
+##  I've put in a resonable defualt
 PLAN9=/usr/local/plan9 export PLAN9
 PATH=$PATH:$PLAN9/bin export PATH
 
@@ -21,13 +20,12 @@ SNARF_CMD="qdbus org.marnold.mklip /org/marnold/mklip getClipboardContents"
 PSNARF_CMD="qdbus org.marnold.mklip /org/marnold/mklip autoprocClipboardContents"
 VERSION="0.3.6+alpha"
 OURFILE=""
-WATCH=`true`
+WATCH=$(true)
 BASEDIR="$HOME/.vsss"
 SESSIONDIR="$BASEDIR/session"
 mkdir -p $BASEDIR
 mkdir -p $SESSIONDIR
-. `find_shell_config $BASEDIR`
-
+. $(find_shell_config $BASEDIR)
 
 clr() {
 	#rm -f $SESSIONDIR/*
@@ -38,46 +36,39 @@ clr() {
 
 }
 
-
-
-
 snarf() {
-	if test -n "$OURFILE" -a -s "$OURFILE"
-	then
-		ln -sf $OURFILE  $SESSIONDIR/last
+	if test -n "$OURFILE" -a -s "$OURFILE"; then
+		ln -sf $OURFILE $SESSIONDIR/last
 	fi
-	ndp=`what_name`
-	OURFILE=`kytemp $SESSIONDIR $ndp `
+	ndp=$(what_name)
+	OURFILE=$(kytemp $SESSIONDIR $ndp)
 	ln -sf $OURFILE $SESSIONDIR/active
-	$SNARF_CMD > $OURFILE
+	$SNARF_CMD >$OURFILE
 	cat $OURFILE | nl
 
 }
 psnarf() {
-	if test -n "$OURFILE" -a -s "$OURFILE"
-	then
-		ln -sf $OURFILE  $SESSIONDIR/last
+	if test -n "$OURFILE" -a -s "$OURFILE"; then
+		ln -sf $OURFILE $SESSIONDIR/last
 	fi
-	ndp=`what_name`
-	OURFILE=`kytemp $SESSIONDIR $ndp `
+	ndp=$(what_name)
+	OURFILE=$(kytemp $SESSIONDIR $ndp)
 	ln -sf $OURFILE $SESSIONDIR/active
-	dspn=`echo $ndp.d`
-	DISPFILE=`kytemp $SESSIONDIR $dspn`
-	$PSNARF_CMD > $OURFILE
-        (cat -n $OURFILE)
+	dspn=$(echo $ndp.d)
+	DISPFILE=$(kytemp $SESSIONDIR $dspn)
+	$PSNARF_CMD >$OURFILE
+	(cat -n $OURFILE)
 
 }
 
-
 act_man() {
-    
-        if test -n "$OURFILE" -a -s "$OURFILE"
-        then
-                ln -sf $OURFILE  $SESSIONDIR/last
-        fi
-	ndp=`what_name`
-    OURFILE=`kytemp $SESSIONDIR $ndp`
-    ln -sf $OURFILE $SESSIONDIR/active
+
+	if test -n "$OURFILE" -a -s "$OURFILE"; then
+		ln -sf $OURFILE $SESSIONDIR/last
+	fi
+	ndp=$(what_name)
+	OURFILE=$(kytemp $SESSIONDIR $ndp)
+	ln -sf $OURFILE $SESSIONDIR/active
 }
 lexerr() {
 	echo "Invalid Token"
@@ -85,123 +76,107 @@ lexerr() {
 
 echo "Very Simple Speech Shell"
 echo "Version $VERSION"
-while $WATCH
-do
-	echo 
+while $WATCH; do
+	echo
 	echo
 	echo -n '>>>>'
 	read cmd
-	
-case "$cmd" in
-        ss|s)
-            snarf
-	    speak_bckend $SESSIONDIR/active  
 
-            ;;
-         
-        m)
-	    work=`pwd`
-            cd $BASEDIR
-	    env rc
-	    cd $work
-            ;;
-         
-        c)
-	cat $SESSIONDIR/active > $SESSIONDIR/last
-	cat /dev/null > $SESSIONDIR/active
-	;;
-	
+	case "$cmd" in
+	ss | s)
+		snarf
+		speak_bckend $SESSIONDIR/active
+
+		;;
+
+	m)
+		work=$(pwd)
+		cd $BASEDIR
+		env rc
+		cd $work
+		;;
+
+	c)
+		cat $SESSIONDIR/active >$SESSIONDIR/last
+		cat /dev/null >$SESSIONDIR/active
+		;;
+
 	sc)
-	clear
-	;;
+		clear
+		;;
 	e)
-	echo $OURFILE
-	$spkedit $SESSIONDIR/active
-	;;
-	q|Q)
-	
-	exit 0
-	;;
+		echo $OURFILE
+		$spkedit $SESSIONDIR/active
+		;;
+	q | Q)
+
+		exit 0
+		;;
 	r)
-	cat -n $OURFILE
-	speak_bckend $OURFILE
-	;;
+		cat -n $OURFILE
+		speak_bckend $OURFILE
+		;;
 	l)
-	snarf
-	;;
+		snarf
+		;;
 	b)
-	cat $SESSIONDIR/last > $SESSIONDIR/active
-	echo "Head Reset to previous"
-	;;
+		cat $SESSIONDIR/last >$SESSIONDIR/active
+		echo "Head Reset to previous"
+		;;
 
 	n)
-	clr
-	echo "Session History Cleared"
-	;;
+		clr
+		echo "Session History Cleared"
+		;;
 	ap)
-	qdbus org.marnold.mklip /org/marnold/mklip amalgmateClipboard
-	echo "Action $cmd Done"
-	;;
+		qdbus org.marnold.mklip /org/marnold/mklip amalgmateClipboard
+		echo "Action $cmd Done"
+		;;
 	as)
-        act_man
-        qdbus org.marnold.mklip /org/marnold/mklip getAmalgamatedBuffer > $SESSIONDIR/active
-        cat $SESSIONDIR/active
-        speak_bckend $SESSIONDIR/active
-        ;;
-        ac)
-        qdbus org.marnold.mklip /org/marnold/mklip clearAmalgamatedBuffer
-        echo "Text Buffer Cleared"
-        ;;
+		act_man
+		qdbus org.marnold.mklip /org/marnold/mklip getAmalgamatedBuffer >$SESSIONDIR/active
+		cat $SESSIONDIR/active
+		speak_bckend $SESSIONDIR/active
+		;;
+	ac)
+		qdbus org.marnold.mklip /org/marnold/mklip clearAmalgamatedBuffer
+		echo "Text Buffer Cleared"
+		;;
 	i)
-	rate=$(($rate+5))
-	echo "Rate is: $rate"
-	;;
+		rate=$(($rate + 5))
+		echo "Rate is: $rate"
+		;;
 
 	k)
-	rate=$(($rate-5))
-	echo "Rate is: $rate"
-	;;
+		rate=$(($rate - 5))
+		echo "Rate is: $rate"
+		;;
 	fs)
-	psnarf
-	speak_bckend $SESSIONDIR/active  
+		psnarf
+		speak_bckend $SESSIONDIR/active
 
-	;;
+		;;
 	t)
-	cat -n $SESSIONDIR/active | less
-	;;
-	vox)
-	select vx in  /opt/swift/voices/* exit
-	do 
-		case $vx in
-			exit)
-			break
-			;;
-			*)
-			echo `basename $vx`
-			VOX=`basename $vx`
-			break
-			;;
-		esac
-	done
-	;;
-        j)
-	act_man
-	echo -n ':? '
-	read jmp
-	cat $SESSIONDIR/last | sed -n "$jmp,$ p" > $SESSIONDIR/active
-	#cat $SESSIONDIR/active
-	speak_bckend $SESSIONDIR/active
-	cat $SESSIONDIR/last > $SESSIONDIR/active
-	;;
+		cat -n $SESSIONDIR/active | less
+		;;
+	j)
+		act_man
+		echo -n ':? '
+		read jmp
+		cat $SESSIONDIR/last | sed -n "$jmp,$ p" >$SESSIONDIR/active
+		#cat $SESSIONDIR/active
+		speak_bckend $SESSIONDIR/active
+		cat $SESSIONDIR/last >$SESSIONDIR/active
+		;;
 	x)
 		echo -n ':? '
 		read EDLN
 		sed -i $EDLN $SESSIONDIR/active
-	;;
+		;;
 
 	*)
-            lexerr
- 
-esac
-done
+		lexerr
+		;;
 
+	esac
+done
