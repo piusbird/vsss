@@ -31,7 +31,8 @@ Copyright (c) 2014 Matt Arnold
 # ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE
 
 """
-
+import gi
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk
 import dbus
 import dbus.service
