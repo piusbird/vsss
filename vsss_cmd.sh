@@ -1,14 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 
 ## Module vsss_cmd.sh
-## Purpose: Command interpitor for very stupid speech shell
+## Purpose: Command interpreter for very stupid speech shell
 ## Author: Matt Arnold <mattarnold5@gmail.com>
 ## Start Date: 12/20/2013
 ## Modified: 2/15/2014
 . ./vsss_funclib.sh
 
 
-# SNARF_CMD  gets the curreng clipboard contents
+# SNARF_CMD  gets the current clipboard contents
 # Ways of doing this will very depending on desktop env/window managers
 
 SNARF_CMD="qdbus org.marnold.mklip /org/marnold/mklip getClipboardContents"
