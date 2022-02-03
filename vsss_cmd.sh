@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ## Module vsss_cmd.sh
 ## Purpose: Command interpitor for very stupid speech shell
@@ -7,11 +7,6 @@
 ## Modified: 2/15/2014
 . ./vsss_funclib.sh
 
-##  We Require Plan 9 from User Space to make this work
-##  so insstall it, and adjust these vars accordingly
-##  I've put in a resonable defualt
-PLAN9=/usr/local/plan9 export PLAN9
-PATH=$PATH:$PLAN9/bin export PATH
 
 # SNARF_CMD  gets the curreng clipboard contents
 # Ways of doing this will very depending on desktop env/window managers
@@ -92,7 +87,7 @@ while $WATCH; do
 	m)
 		work=$(pwd)
 		cd $BASEDIR
-		env rc
+		env sh
 		cd $work
 		;;
 
@@ -128,20 +123,7 @@ while $WATCH; do
 		clr
 		echo "Session History Cleared"
 		;;
-	ap)
-		qdbus org.marnold.mklip /org/marnold/mklip amalgmateClipboard
-		echo "Action $cmd Done"
-		;;
-	as)
-		act_man
-		qdbus org.marnold.mklip /org/marnold/mklip getAmalgamatedBuffer >$SESSIONDIR/active
-		cat $SESSIONDIR/active
-		speak_bckend $SESSIONDIR/active
-		;;
-	ac)
-		qdbus org.marnold.mklip /org/marnold/mklip clearAmalgamatedBuffer
-		echo "Text Buffer Cleared"
-		;;
+
 	i)
 		rate=$(($rate + 5))
 		echo "Rate is: $rate"
@@ -172,6 +154,20 @@ while $WATCH; do
 		echo -n ':? '
 		read EDLN
 		sed -i $EDLN $SESSIONDIR/active
+		;;
+	ap)
+		qdbus org.marnold.mklip /org/marnold/mklip amalgmateClipboard
+		echo "Action $cmd Done"
+		;;
+	as)
+		act_man
+		qdbus org.marnold.mklip /org/marnold/mklip getAmalgamatedBuffer >$SESSIONDIR/active
+		cat $SESSIONDIR/active
+		speak_bckend $SESSIONDIR/active
+		;;
+	ac)
+		qdbus org.marnold.mklip /org/marnold/mklip clearAmalgamatedBuffer
+		echo "Text Buffer Cleared"
 		;;
 
 	*)
