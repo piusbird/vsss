@@ -19,7 +19,7 @@ PATH=$PATH:$PLAN9/bin export PATH
 
 SNARF_CMD="qdbus org.marnold.mklip /org/marnold/mklip getClipboardContents"
 PSNARF_CMD="qdbus org.marnold.mklip /org/marnold/mklip autoprocClipboardContents"
-VERSION="0.3.4+test"
+VERSION="0.3.6+alpha"
 OURFILE=""
 WATCH=`true`
 BASEDIR="$HOME/.vsss"
@@ -153,12 +153,12 @@ case "$cmd" in
         echo "Text Buffer Cleared"
         ;;
 	i)
-	let "rate = $rate + 5"
+	rate=$(($rate+5))
 	echo "Rate is: $rate"
 	;;
 
 	k)
-	let "rate = $rate - 5"
+	rate=$(($rate-5))
 	echo "Rate is: $rate"
 	;;
 	fs)
