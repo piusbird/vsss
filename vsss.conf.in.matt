@@ -4,8 +4,9 @@ PIPE_COLOR="1;33;45m"
 export PIPE_COLOR
 audio_bckend="padsp"
 spkedit="pluma" 
+PATH=/home/matt/pkg/bin:$PATH
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/matt/pkg/lib64
 speak_bckend() {
-
     if [ -f /tmp/vsss.lock ]
     then
 	echo "Speech output is currently in use"
@@ -13,7 +14,9 @@ speak_bckend() {
     else
 	touch /tmp/vsss.lock
     fi
-    $audio_bckend swift -n $VOX -p "speech/rate=$rate" -f $1 -m text -t | ./pcg 
+    cat $1 | ./emojifilter.py > $1.new
+    mv $1.new $1
+    $audio_bckend swift -n $VOX -p "speech/rate=$rate" -f $1 -m text -t |  ./pcg 
     rm /tmp/vsss.lock
     return 1
 
